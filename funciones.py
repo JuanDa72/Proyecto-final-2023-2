@@ -1,6 +1,7 @@
 #En este archivo pondremos las funciones que usaremos en el proyecto :)
 from unidecode import unidecode
 import matplotlib.pyplot as plt
+import stopwordsiso as stopwords
 
 def cargar_libro(archivo):
     with open (archivo,'r',encoding='utf-8') as arc:
@@ -47,9 +48,63 @@ def histograma_frecuencia(string):
 
     plt.show()
 
+# Punto 5
+def get_frecuencia_palabras(string):
+    lista=string.split()
+    dicci={}
+    for i in lista:
+        fre=dicci.get(i,0)
+        dicci[i]=fre+1
+    return dicci
+
+def get_100_palabras_frecuentes(string):
+    frecuencia = get_frecuencia_palabras(string)
+    frecuencia = sorted(frecuencia.items(), key=lambda x: x[1], reverse=True)
+  
+    return dict(frecuencia[:100]).keys()
+
+# Punto 6
+def get_distinct_words(string):
+    return list(set(string.split()))
+
+# Punto 7
+def get_language(palabras):
+    counter = {"en": 0, "es": 0, "fr": 0, "de": 0, "pt": 0}
+    for palabra in palabras:
+        for idioma in counter:
+            if palabra in stopwords.stopwords(idioma):
+                counter[idioma] += 1
+    return max(counter.items(), key=lambda x: x[1])[0]
+
+# Punto 8
+def get_frecuencia_not_stopwords(string, lang):
+    lista=string.split()
+    dicc= {}
+    for i in lista:
+      if i not in stopwords.stopwords(lang):
+        fre=dicc.get(i,0)
+        dicc[i]=fre+1
+    max_50 = sorted(dicc.items(), key=lambda x: x[1], reverse=True)[:50]
+    return dict(max_50).keys()
+
 
 todo=cargar_libro('r_y_j.txt')
 print(contar_caracteres(todo))
 print(contar_letras(todo))
 print(frecuencia_letras(todo))
+
+# Punto 5
+palabras_mas_frec = get_100_palabras_frecuentes(todo)
+print(f'5. 100 Palabras mas frecuentes: {palabras_mas_frec}')
+# Punto 6
+print(f'6. Distintas palabras: {len(get_distinct_words(todo))}')
+# Punto 7
+lang = get_language(palabras_mas_frec)
+print(f'7. Idioma: {lang}')
+# Punto 8
+print(f'8. 50 Palabras mas frecuentes no stopwords: {get_frecuencia_not_stopwords(todo, lang)}')
+# Punto 9
+
+
+# Punto 4
 histograma_frecuencia(todo)
