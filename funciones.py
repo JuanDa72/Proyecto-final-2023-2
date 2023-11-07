@@ -2,6 +2,7 @@
 from unidecode import unidecode
 import matplotlib.pyplot as plt
 import stopwordsiso as stopwords
+import spacy
 
 def cargar_libro(archivo):
     with open (archivo,'r',encoding='utf-8') as arc:
@@ -87,6 +88,57 @@ def get_frecuencia_not_stopwords(string, lang):
     max_50 = sorted(dicc.items(), key=lambda x: x[1], reverse=True)[:50]
     return dict(max_50).keys()
 
+
+#Alejandro 
+e = spacy.load('es_core_news_md')
+def places_or_names(x):
+    f = {}
+    t = False
+
+    for p in x:
+        if p.endswith(".") or x.index(p) == 0:
+            t = True
+        elif p.istitle() and not t:
+            if p in f:
+                f[p] += 1
+            else:
+                f[p] = 1
+        else:
+            t = False
+
+    return f
+
+def places(x):
+    lugares = {}
+    nombres = {}
+    x = places_or_names(x)
+    for lugar, veces in x.items():
+        d = e(lugar)
+        l = []
+        for i in d.ents:
+            if i.label_ == "LOC":
+                l.append(i.text)
+        if l:
+            lugares[lugar] = l * veces
+        else:
+            nombres[lugar] = [lugar] * veces
+    return(lugares, nombres)
+
+#Pruebas de Alejandro :)
+'''
+x = input().split()
+l, n = places(x)
+r = {}
+for i, j in n.items():
+    if i not in r:
+        r[i] = len(j)
+z = dict(sorted(r.items(), key=lambda item:item[1], reverse= True))
+principales = list(z.keys())[:5]
+for k, m in n.items():
+    print(k,(len(m)))
+print("" + " ".join(principales))
+print("" + " ".join(l.keys()))
+'''
 
 todo=cargar_libro('r_y_j.txt')
 print(contar_caracteres(todo))
