@@ -1,4 +1,5 @@
 #En este archivo pondremos las funciones que usaremos en el proyecto :)
+import re
 from unidecode import unidecode
 import matplotlib.pyplot as plt
 import stopwordsiso as stopwords
@@ -123,6 +124,43 @@ def places(x):
         else:
             nombres[lugar] = [lugar] * veces
     return(lugares, nombres)
+
+
+#Punto 12, por mejorar
+def encontrar_fechas(texto):
+    patron_años = r'\d{4}'
+    años_texto = re.findall(patron_años, texto)
+    años = set(años_texto)
+    set1, set2, set3 = set(), set(), set()
+    
+    for i in años:
+        i = int(i)  
+        if i < 1789:
+            set1.add(i)
+        elif 1789 <= i <= 2023:
+            set2.add(i)
+        else:
+            set3.add(i)
+
+    mayor_longitud = 0
+    conjunto_mayor_longitud = None
+
+    if len(set1) > mayor_longitud:
+        conjunto_mayor_longitud = set1
+        mayor_longitud = len(set1)
+    if len(set2) > mayor_longitud:
+        conjunto_mayor_longitud = set2
+        mayor_longitud = len(set2)
+    if len(set3) > mayor_longitud:
+        conjunto_mayor_longitud = set3
+        mayor_longitud = len(set3)
+
+    if conjunto_mayor_longitud == set1:
+        print('Época antigua')
+    elif conjunto_mayor_longitud == set2:
+        print('Época contemporanea')
+    elif conjunto_mayor_longitud == set3:
+        print('Futurista')
 
 #Pruebas de Alejandro :)
 '''
