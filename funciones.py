@@ -62,7 +62,6 @@ def get_frecuencia_palabras(string):
 def get_100_palabras_frecuentes(string):
     frecuencia = get_frecuencia_palabras(string)
     frecuencia = sorted(frecuencia.items(), key=lambda x: x[1], reverse=True)
-  
     return dict(frecuencia[:100]).keys()
 
 # Punto 6
@@ -83,19 +82,17 @@ def get_frecuencia_not_stopwords(string, lang):
     lista=string.split()
     dicc= {}
     for i in lista:
-      if i not in stopwords.stopwords(lang):
-        fre=dicc.get(i,0)
-        dicc[i]=fre+1
+        if i not in stopwords.stopwords(lang):
+            fre=dicc.get(i,0)
+            dicc[i]=fre+1
     max_50 = sorted(dicc.items(), key=lambda x: x[1], reverse=True)[:50]
     return dict(max_50).keys()
-
 
 #Alejandro 
 e = spacy.load('es_core_news_md')
 def places_or_names(x):
     f = {}
     t = False
-
     for p in x:
         if p.endswith(".") or x.index(p) == 0:
             t = True
@@ -126,41 +123,36 @@ def places(x):
     return(lugares, nombres)
 
 
-#Punto 12, por mejorar
+#Punto 12
 def encontrar_fechas(texto):
-    patron_años = r'\d{4}'
-    años_texto = re.findall(patron_años, texto)
-    años = set(años_texto)
-    set1, set2, set3 = set(), set(), set()
+    patron_years = r'\d{4}'
+    years_str = re.findall(patron_years, texto)
+    years = set(years_str)
+    epoca_antigua, epoca_contempo, epoca_futurista = set(), set(), set()
     
-    for i in años:
+    for i in years:
         i = int(i)  
         if i < 1789:
-            set1.add(i)
+            epoca_antigua.add(i)
         elif 1789 <= i <= 2023:
-            set2.add(i)
+            epoca_contempo.add(i)
         else:
-            set3.add(i)
+            epoca_futurista.add(i)
 
     mayor_longitud = 0
     conjunto_mayor_longitud = None
+    epocas = [epoca_antigua, epoca_contempo, epoca_futurista]
+    for epoca in epocas:
+        if len(epoca) > mayor_longitud:
+            mayor_longitud = len(epoca)
+            conjunto_mayor_longitud = epoca
 
-    if len(set1) > mayor_longitud:
-        conjunto_mayor_longitud = set1
-        mayor_longitud = len(set1)
-    if len(set2) > mayor_longitud:
-        conjunto_mayor_longitud = set2
-        mayor_longitud = len(set2)
-    if len(set3) > mayor_longitud:
-        conjunto_mayor_longitud = set3
-        mayor_longitud = len(set3)
-
-    if conjunto_mayor_longitud == set1:
-        print('Época antigua')
-    elif conjunto_mayor_longitud == set2:
-        print('Época contemporanea')
-    elif conjunto_mayor_longitud == set3:
-        print('Futurista')
+    if conjunto_mayor_longitud == epoca_antigua:
+        return 'Época antigua'
+    elif conjunto_mayor_longitud == epoca_contempo:
+        return 'Época contemporánea'
+    elif conjunto_mayor_longitud == epoca_futurista:
+        return 'Futurista'
 
 #Pruebas de Alejandro :)
 '''
@@ -178,10 +170,16 @@ print("" + " ".join(principales))
 print("" + " ".join(l.keys()))
 '''
 
+# Punto 1
 todo=cargar_libro('r_y_j.txt')
-print(contar_caracteres(todo))
-print(contar_letras(todo))
-print(frecuencia_letras(todo))
+# Punto 2
+chars = contar_caracteres(todo)
+letters = contar_letras(todo)
+print(f'2. Número de caracteres: {chars}. \tNúmero de letras: {letters}')
+# Punto 3
+print(f'3. Frecuencia de cada letra: {frecuencia_letras(todo)}')
+
+# TODO: Punto 4
 
 # Punto 5
 palabras_mas_frec = get_100_palabras_frecuentes(todo)
@@ -195,6 +193,9 @@ print(f'7. Idioma: {lang}')
 print(f'8. 50 Palabras mas frecuentes no stopwords: {get_frecuencia_not_stopwords(todo, lang)}')
 # Punto 9
 
+# Punto 12
+# if lang == 'es':
+print(f'12. Época del texto: {encontrar_fechas(todo)}')
 
-# Punto 4
+# Punto 3 - Histograma
 histograma_frecuencia(todo)
