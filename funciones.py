@@ -96,19 +96,40 @@ def get_frecuencia_not_stopwords(string, lang):
 
 #Alejandro 
 e = spacy.load('es_core_news_md')
+def especiales(x):
+    t = ''.join((i for i in x if i.isalpha() or i.isspace() or i == '.'))
+    for i in t:
+        i = i.replace(":","")
+        i = i.replace("¿","")
+        i = i.replace("?","")
+        i = i.replace("-","")
+        i = i.replace(">>","")
+        i = i.replace("—","")
+        i = i.replace(".","")
+        i = i.replace(";","")
+        i = i.replace(":","")
+            
+    return t
 def places_or_names(x):
     f = {}
     t = False
-    for p in x:
-        if p.endswith(".") or x.index(p) == 0:
+    for i, p in enumerate(x):
+        p = especiales(p)
+        if p.endswith(".") or p.endswith(". ") or p.endswith(":") or p.endswith("?") or i == 0:
             t = True
-        elif p.istitle() and not t:
+        elif p.istitle() and not t and len(p)> 2:
             if p in f:
                 f[p] += 1
             else:
                 f[p] = 1
         else:
             t = False
+    c = []
+    for j in f:
+        if j.lower() in x:
+            c.append(j)
+    for palabra in c:
+        del f[palabra]
 
     return f
 
@@ -124,10 +145,27 @@ def places(x):
                 l.append(i.text)
         if l:
             lugares[lugar] = l * veces
-        else:
+        elif int(veces) > 2:
             nombres[lugar] = [lugar] * veces
     return(lugares, nombres)
 
+#Pruebas alejandro v2
+'''
+with open("texto.txt", "r", encoding="utf-8") as archivo:
+    lista = archivo.read()
+    x = lista.split()
+l, n = places(x)
+r = {}
+for i, j in n.items():
+    if i not in r:
+        r[i] = len(j)
+z = dict(sorted(r.items(), key=lambda item:item[1], reverse= True))
+principales = list(z.keys())[:5]
+for k, m in n.items():
+    print(k,(len(m)))
+print("" + " ".join(principales))
+print("" + " ".join(l.keys()))
+'''
 
 #Punto 12
 def encontrar_fechas(texto):
@@ -160,21 +198,6 @@ def encontrar_fechas(texto):
     elif conjunto_mayor_longitud == epoca_futurista:
         return 'Futurista'
 
-#Pruebas de Alejandro :)
-'''
-x = input().split()
-l, n = places(x)
-r = {}
-for i, j in n.items():
-    if i not in r:
-        r[i] = len(j)
-z = dict(sorted(r.items(), key=lambda item:item[1], reverse= True))
-principales = list(z.keys())[:5]
-for k, m in n.items():
-    print(k,(len(m)))
-print("" + " ".join(principales))
-print("" + " ".join(l.keys()))
-'''
 
 # Punto 1
 todo=cargar_libro('r_y_j.txt')
