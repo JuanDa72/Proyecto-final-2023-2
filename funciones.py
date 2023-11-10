@@ -4,6 +4,7 @@ from unidecode import unidecode
 import matplotlib.pyplot as plt
 import stopwordsiso as stopwords
 import spacy
+import numpy as np
 
 def cargar_libro(archivo):
     with open (archivo,'r',encoding='utf-8') as arc:
@@ -49,7 +50,12 @@ def histograma_frecuencia(string):
     plt.title('Histograma de frecuencia de letras en el libro')
 
     plt.show()
-
+# Punto 4
+def histograma_longitud_palabras(texto):
+    palabras = texto.split()
+    longitud_palabras = np.array([len(palabra) for palabra in palabras])
+    plt.hist(longitud_palabras)
+    plt.show()
 # Punto 5
 def get_frecuencia_palabras(string):
     lista=string.split()
@@ -179,8 +185,8 @@ print(f'2. Número de caracteres: {chars}. \tNúmero de letras: {letters}')
 # Punto 3
 print(f'3. Frecuencia de cada letra: {frecuencia_letras(todo)}')
 
-# TODO: Punto 4
-
+#Punto 4
+(histograma_longitud_palabras(todo)
 # Punto 5
 palabras_mas_frec = get_100_palabras_frecuentes(todo)
 print(f'5. 100 Palabras mas frecuentes: {palabras_mas_frec}')
