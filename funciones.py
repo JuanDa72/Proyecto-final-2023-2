@@ -94,7 +94,7 @@ def get_frecuencia_not_stopwords(string, lang):
     max_50 = sorted(dicc.items(), key=lambda x: x[1], reverse=True)[:50]
     return dict(max_50).keys()
 
-#Alejandro 
+#Puntos 9, 10, 11
 e = spacy.load('es_core_news_md')
 def especiales(x):
     t = ''.join((i for i in x if i.isalpha() or i.isspace() or i == '.'))
